@@ -1,6 +1,7 @@
 //  For licensing see accompanying LICENSE.md file.
 //  Copyright © 2024 Argmax, Inc. All rights reserved.
 
+
 import Accelerate
 import AVFAudio
 import CoreML
@@ -1310,18 +1311,38 @@ struct WhisperTokenizerWrapper: WhisperTokenizer {
 }
 
 extension WhisperTokenizerWrapper: Tokenizer {
-    func applyChatTemplate(messages: [[String : String]], chatTemplate: Tokenizers.ChatTemplateArgument) throws -> [Int] {
+    public func applyChatTemplate(
+        messages: [[String: String]],
+        chatTemplate: Tokenizers.ChatTemplateArgument
+    ) throws -> [Int] {
         try tokenizer.applyChatTemplate(messages: messages, chatTemplate: chatTemplate)
     }
-    
-    func applyChatTemplate(messages: [[String : String]], chatTemplate: String) throws -> [Int] {
+
+    public func applyChatTemplate(
+        messages: [[String: String]],
+        chatTemplate: String
+    ) throws -> [Int] {
         try tokenizer.applyChatTemplate(messages: messages, chatTemplate: chatTemplate)
     }
-    
-    func applyChatTemplate(messages: [[String : String]], chatTemplate: Tokenizers.ChatTemplateArgument?, addGenerationPrompt: Bool, truncation: Bool, maxLength: Int?, tools: [[String : Any]]?) throws -> [Int] {
-        try tokenizer.applyChatTemplate(messages: messages, chatTemplate: chatTemplate, addGenerationPrompt: addGenerationPrompt, truncation: truncation, maxLength: maxLength, tools: tools)
+
+    public func applyChatTemplate(
+        messages: [[String: String]],
+        chatTemplate: Tokenizers.ChatTemplateArgument?,
+        addGenerationPrompt: Bool,
+        truncation: Bool,
+        maxLength: Int?,
+        tools: [[String: Any]]?
+    ) throws -> [Int] {
+        try tokenizer.applyChatTemplate(
+            messages: messages,
+            chatTemplate: chatTemplate,
+            addGenerationPrompt: addGenerationPrompt,
+            truncation: truncation,
+            maxLength: maxLength,
+            tools: tools
+        )
     }
-    
+
     func tokenize(text: String) -> [String] {
         tokenizer.tokenize(text: text)
     }
