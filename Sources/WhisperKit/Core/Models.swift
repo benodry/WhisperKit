@@ -1311,22 +1311,76 @@ struct WhisperTokenizerWrapper: WhisperTokenizer {
 }
 
 extension WhisperTokenizerWrapper: Tokenizer {
-    public func applyChatTemplate(
-        messages: [[String: String]],
-        chatTemplate: Tokenizers.ChatTemplateArgument
-    ) throws -> [Int] {
+    public func tokenize(text: String) -> [String] {
+        tokenizer.tokenize(text: text)
+    }
+
+    public func encode(text: String) -> [Int] {
+        tokenizer.encode(text: text)
+    }
+
+    public func encode(text: String, addSpecialTokens: Bool) -> [Int] {
+        tokenizer.encode(text: text, addSpecialTokens: addSpecialTokens)
+    }
+
+    public func callAsFunction(_ text: String, addSpecialTokens: Bool) -> [Int] {
+        tokenizer.callAsFunction(text, addSpecialTokens: addSpecialTokens)
+    }
+
+    public func decode(tokens: [Int]) -> String {
+        tokenizer.decode(tokens: tokens)
+    }
+    
+    public func decode(tokens: [Int], skipSpecialTokens: Bool) -> String {
+        tokenizer.decode(tokens: tokens, skipSpecialTokens: skipSpecialTokens)
+    }
+
+    public func convertTokenToId(_ token: String) -> Int? {
+        tokenizer.convertTokenToId(token)
+    }
+
+    public func convertTokensToIds(_ tokens: [String]) -> [Int?] {
+        tokenizer.convertTokensToIds(tokens)
+    }
+
+    public func convertIdToToken(_ id: Int) -> String? {
+        tokenizer.convertIdToToken(id)
+    }
+
+    public func convertIdsToTokens(_ ids: [Int]) -> [String?] {
+        tokenizer.convertIdsToTokens(ids)
+    }
+
+    public var bosToken: String? { tokenizer.bosToken }
+    public var bosTokenId: Int? { tokenizer.bosTokenId }
+    public var eosToken: String? { tokenizer.eosToken }
+    public var eosTokenId: Int? { tokenizer.eosTokenId }
+    public var unknownToken: String? { tokenizer.unknownToken }
+    public var unknownTokenId: Int? { tokenizer.unknownTokenId }
+
+    public func applyChatTemplate(messages: [Message]) throws -> [Int] {
+        try tokenizer.applyChatTemplate(messages: messages)
+    }
+
+    public func applyChatTemplate(messages: [Message], chatTemplate: Tokenizers.ChatTemplateArgument) throws -> [Int] {
+        try tokenizer.applyChatTemplate(messages: messages, chatTemplate: chatTemplate)
+    }
+    
+    public func applyChatTemplate(messages: [Message], tools: [ToolSpec]?) throws -> [Int] {
+        try tokenizer.applyChatTemplate(messages: messages, tools: tools)
+    }
+
+    /// The appropriate chat template is selected from the tokenizer config
+    public func applyChatTemplate(messages: [Message], tools: [ToolSpec]?, additionalContext: [String: Any]?) throws -> [Int] {
+        try tokenizer.applyChatTemplate(messages: messages, tools: tools, additionalContext: additionalContext)
+    }
+
+    public func applyChatTemplate(messages: [Message], chatTemplate: String) throws -> [Int] {
         try tokenizer.applyChatTemplate(messages: messages, chatTemplate: chatTemplate)
     }
 
     public func applyChatTemplate(
-        messages: [[String: String]],
-        chatTemplate: String
-    ) throws -> [Int] {
-        try tokenizer.applyChatTemplate(messages: messages, chatTemplate: chatTemplate)
-    }
-
-    public func applyChatTemplate(
-        messages: [[String: String]],
+        messages: [Message],
         chatTemplate: Tokenizers.ChatTemplateArgument?,
         addGenerationPrompt: Bool,
         truncation: Bool,
@@ -1342,61 +1396,25 @@ extension WhisperTokenizerWrapper: Tokenizer {
             tools: tools
         )
     }
-
-    func tokenize(text: String) -> [String] {
-        tokenizer.tokenize(text: text)
-    }
-
-    func callAsFunction(_ text: String, addSpecialTokens: Bool) -> [Int] {
-        tokenizer.callAsFunction(text, addSpecialTokens: addSpecialTokens)
-    }
-
-    func encode(text: String) -> [Int] {
-        tokenizer.encode(text: text)
-    }
-
-    func encode(text: String, addSpecialTokens: Bool) -> [Int] {
-        tokenizer.encode(text: text, addSpecialTokens: addSpecialTokens)
-    }
-
-    func decode(tokens: [Int]) -> String {
-        tokenizer.decode(tokens: tokens)
-    }
-
-    func convertTokenToId(_ token: String) -> Int? {
-        tokenizer.convertTokenToId(token)
-    }
-
-    func convertIdToToken(_ id: Int) -> String? {
-        tokenizer.convertIdToToken(id)
-    }
-
-    var bosToken: String? {
-        tokenizer.bosToken
-    }
-
-    var bosTokenId: Int? {
-        tokenizer.bosTokenId
-    }
-
-    var eosToken: String? {
-        tokenizer.eosToken
-    }
-
-    var eosTokenId: Int? {
-        tokenizer.eosTokenId
-    }
-
-    var unknownToken: String? {
-        tokenizer.unknownToken
-    }
-
-    var unknownTokenId: Int? {
-        tokenizer.unknownTokenId
-    }
-
-    func applyChatTemplate(messages: [[String: String]]) throws -> [Int] {
-        try tokenizer.applyChatTemplate(messages: messages)
+    public func applyChatTemplate(
+        messages: [Message],
+        // A chat template can optionally be provided or specified by name when several templates are included in the tokenizer config. Normally this is not necessary.
+        chatTemplate: ChatTemplateArgument?,
+        addGenerationPrompt: Bool,
+        truncation: Bool,
+        maxLength: Int?,
+        tools: [ToolSpec]?,
+        additionalContext: [String: Any]?
+    ) throws -> [Int] {
+        try tokenizer.applyChatTemplate(
+            messages: messages,
+            chatTemplate: chatTemplate,
+            addGenerationPrompt: addGenerationPrompt,
+            truncation: truncation,
+            maxLength: maxLength,
+            tools: tools,
+            additionalContext: additionalContext
+        )
     }
 }
 
